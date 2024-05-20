@@ -26,7 +26,7 @@ Este repositorio es la base para el desarrollo del curso de análisis de no dete
 
 **Instructor**
 
-* Alonso Otiniano [Linkedin](https://www.linkedin.com/in/aotinianoz/),  [Web page](https://webaoz2.netlify.app), [Twiter](https://twitter.com/OtinianoAlonso).
+* Ing. Alonso Otiniano [Orcid](https://orcid.org/0000-0001-6282-7992), [Linkedin](https://www.linkedin.com/in/aotinianoz/),  [Web page](https://webaoz2.netlify.app), [Twiter](https://twitter.com/OtinianoAlonso).
 
 ## Panorama
 
@@ -150,9 +150,29 @@ Agenda
     * Trabajo final sobre data escogida por el alumno, desde la exploración, nociones básicas, test estadísticos hasta el modelado.
 
 
-
 Ver en el siguiente [link](https://aozweb.com/Poster/Temas.pdf) para el temario completo.
 
+Descansos Oficiales
 
+| Time          | Activity         |
+| :------------ | :--------------- |
+| 19:30 - 19:40 | *Coffee break*   |
+| 20:30 - 20:35 | *Coffee break*   |
+
+
+## Instructores
+
+Reseña será dada al momento del desarrollo del curso. 
+
+
+# Para hacer reloggin:
+
+Esto estará a cargo del **CIP - Ing.Alonso Otiniano Zavala**.
+
+-----
+
+![](https://i.creativecommons.org/l/by/4.0/88x31.png) This work is
+licensed under a [Creative Commons Attribution 4.0 International
+License](https://creativecommons.org/licenses/by/4.0/).
 
 
