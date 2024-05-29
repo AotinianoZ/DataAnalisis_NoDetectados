@@ -87,4 +87,7 @@ plot(st_geometry(points_within_polygon), col = 'red', add = TRUE)
 plot(st_geometry(peligros), col = 'blue', add = TRUE)
 
 
-
+library(leafsync)
+m1 <- mapview(uniones)
+m2 <- mapview(points_within_polygon)
+sync(m1,m2, ncol = 1)
