@@ -1,6 +1,6 @@
 ---
 title: "Data Análisis con No Detectados"
-subtitle: "Límite de detección (LD) y cuantificación (LC)"
+subtitle: "Límites Reportados y Detectados"
 author: "Ing. A.Otiniano"
 institute: "UNI"
 date: "`r Sys.Date()`"
@@ -36,65 +36,59 @@ header-includes:
 ```
 
 
-## Objetivos del análisis LD & LC
+## Objetivos 
 
-* Las observaciones censadas y detectadas deben ser claramente **distingidas**.
+* Entender el concepto de  **Survival Analysis**.
 
-* Data debe ser **fácilmente incorporada** para su uso en software estadísticos.
+* Conocer los diferentes **Límites de Reporte**.
 
-* Límites de detección y de cuantificación deben ser **distingidos y guardados**.
+* Diferenciar los **Límites de Detección y Cuantificación**.
 
+## No Detectados
 
-## Métodos usados en software
+¿Qué son los No detectados?
 
-Los siguientes métodos son los más importantes:
+-   Son *data real* - no debe ser eliminada.
+-   Data censada - conocida como arriba o debajo del **threshold**.
+-   Valores censado por la derecha, la izquierda o por intervalos:
+    - censado-derecho: <1          <--- 1
+    - censado-izquierdo: >1         ---> 1
+    - **intervalo censado (0 a 1)** [0 <---> 1], más usado.
 
--   Indicador de columna.
--   Formato de puntos finales. 
+# Breve Historia de Estadistica de Datos Censados
 
-# Formato de indicador de columnas
-
-## Indicador de columna
+## Trabajos Realizados
 
 :::: {.columns}
 
 ::: {.column width="40%"}
-```{r}
-library(knitr)
-df <- data.frame(
-  Lab = c("<0.01", "<5.00", "10.00"),
-  Conc = c(0.01, 5.00, 10.00),
-  Con_cen = c(1, 1, 0)
-)
 
-kable(df)
-```
+* Data censada usada desde los 1950s en estadistica industrial y medicina.
 
-* Primera columna es la concentración más RLs.
+* Los métodos han sido desarrollados para diferentes ramas en geociencias `censored value`.
 
-* Segunda columna es el indicador. `1 = censored value`.
+* Es denominado **Survival Analysis** o **Reliability analysis**.
 
 :::
 
 ::: {.column width="60%"}
 
-* En R, la segunda columna debemos transformarla a una variable de tipo lógico **TRUE/FALSE** con $1=TRUE$. Esto es realizado mediante el siguiente código.
+* La información fue reconocida gracias a Hesel con el libro [Nondetects And Data Analysis 2005](https://www.researchgate.net/publication/264946174_Nondetects_And_Data_Analysis_Statistics_for_Censored_Environmental_Data)
 
-```{r, eval=FALSE, echo=TRUE}
-attach(df) # name of dataframe
-Con_cen <- as.logical(Con_cen)
-```
+* Existe información de su aplicabilidad en sedimentos de quebrada, aguas y suelos, en roca en mucho menor proporción.
 :::
 
 ::::
 
-## Data Real de Laboratorio
+## Libros Importantes
 
-```{r, out.width='80%', fig.align='center', fig.cap='Database Laboratorio'}
-knitr::include_graphics(path="Graficos/Cap3_1.png")
+```{r, out.width='100%', fig.align='center', fig.cap='Libros de No Detectados'}
+knitr::include_graphics(path="Graficos/AEDND_01_1.PNG")
 ```
 
-## Indicador de columna
+# Límites de Reporte
+
+## Conceptos de Límites de Reporte
 
 Los textos pueden ser usados como indicadores (**no es recomendable**):
 
@@ -110,6 +104,38 @@ kable(df)
 ```
 
 Los números o textos pueden ser usados para diferenciar el LD del LQ, pero el *intervalo de puntos finales* es más apropiado para eso.  
+
+## Conceptos de Límites de cambio
+
+Es considerado un termino **general**, calculado para una variedad de usos y formas.
+Existen dos tipos principales de límite de reporte:
+
+  * Límite de detección.
+  * Límite de cuantificación.
+  
+Desviación estándar asumida ser constante.
+
+
+## Clases
+
+:::: {.columns}
+::: {.column width="50%"}
+* Límite de Detección (LD): Valores medidos sobre el **threshold** son improbable a resultar desde una concentración de cero real.
+
+* Límite de Cuatificación (LC): **Threshold** sobre cual valores numéricos únicos (más que un intervalo o <LC) son reportados.
+:::
+
+::: {.column width="50%"}
+```{r, out.height='60%', fig.align='center', fig.cap='LD & LC'}
+knitr::include_graphics(path="Graficos/AEDND_01_2.png")
+```
+:::
+
+::::
+
+## Configurando el Límite de Detección
+
+
 
 # Formato de puntos finales
 

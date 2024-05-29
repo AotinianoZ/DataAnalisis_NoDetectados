@@ -91,7 +91,7 @@ Con_cen <- as.logical(Con_cen)
 ## Data Real de Laboratorio
 
 ```{r, out.width='80%', fig.align='center', fig.cap='Database Laboratorio'}
-knitr::include_graphics(path="Graficos/Cap3_1.png")
+knitr::include_graphics(path="Graficos/AEDND_02_1.png")
 ```
 
 ## Indicador de columna
