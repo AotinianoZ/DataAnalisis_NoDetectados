@@ -1,0 +1,194 @@
+---
+title: "Data Análisis con No Detectados"
+subtitle: "Guardando No detectados (ND) en Base de Datos"
+author: "Ing. A.Otiniano"
+institute: "UNI"
+date: "`r Sys.Date()`"
+format: 
+  beamer: 
+    #logo: "figura/logo.png"
+    aspectratio: 32
+    navigation: horizontal
+    theme: CambridgeUS   
+    # colortheme: lily
+    fonttheme: professionalfonts
+    highlight: monochrome
+    progressbar: true
+    toc: true
+    incremental: true
+    urlcolor: blue
+header-includes:
+  - \usepackage{eso-pic}  # Required for positioning elements
+  - |
+    \AddToShipoutPictureFG*{
+      \AtPageLowerLeft{
+        \put(20,20){\includegraphics[width=2.5cm]{figura/logo.png}} 
+      }
+    }
+---
+
+```{r}
+# theme:
+# Best themes: AnnArbor, CambridgeUS, Berlin, 
+# To check: Antibes, Bergen, Berkeley, Copenhagen, Dresden, Frankfurt, Goettingen, Hannover
+# Ilmenau, JuanLesPins, Malmoe, Madrid
+# Worst themes: Boadilla, Darmstadt, Luebeck, 
+```
+
+
+## Objetivos del guardado de datos ND
+
+* Las observaciones censadas y detectadas deben ser claramente **distingidas**.
+
+* Data debe ser **fácilmente incorporada** para su uso en software estadísticos.
+
+* Límites de detección y de cuantificación deben ser **distingidos y guardados**.
+
+
+## Métodos usados en software
+
+Los siguientes métodos son los más importantes:
+
+-   Indicador de columna.
+-   Formato de puntos finales. 
+
+# Formato de indicador de columnas
+
+## Indicador de columna
+
+:::: {.columns}
+
+::: {.column width="40%"}
+```{r}
+library(knitr)
+df <- data.frame(
+  Lab = c("<0.01", "<5.00", "10.00"),
+  Conc = c(0.01, 5.00, 10.00),
+  Con_cen = c(1, 1, 0)
+)
+
+kable(df)
+```
+
+* Primera columna es la concentración más RLs.
+
+* Segunda columna es el indicador. `1 = censored value`.
+
+:::
+
+::: {.column width="60%"}
+
+* En R, la segunda columna debemos transformarla a una variable de tipo lógico **TRUE/FALSE** con $1=TRUE$. Esto es realizado mediante el siguiente código.
+
+```{r, eval=FALSE, echo=TRUE}
+attach(df) # name of dataframe
+Con_cen <- as.logical(Con_cen)
+```
+:::
+
+::::
+
+## Data Real de Laboratorio
+
+```{r, out.width='80%', fig.align='center', fig.cap='Database Laboratorio'}
+knitr::include_graphics(path="Graficos/Cap3_1.png")
+```
+
+## Indicador de columna
+
+Los textos pueden ser usados como indicadores (**no es recomendable**):
+
+```{r}
+library(knitr)
+df <- data.frame(
+  Lab = c("<0.01", "<5.00", "10.00"),
+  Conc = c(0.01, 5.00, 10.00),
+  Remarcado = c("E,J,<,etc", "<", "Detected,`  `,etc")
+)
+
+kable(df)
+```
+
+Los números o textos pueden ser usados para diferenciar el LD del LQ, pero el *intervalo de puntos finales* es más apropiado para eso.  
+
+# Formato de puntos finales
+
+## Puntos finales
+
+La primera columna es el límite inferior la segunda es el límite superior.
+
+```{r}
+library(knitr)
+df <- data.frame(
+  Lab = c("<0.01", "<5.00", "10.00"),
+  Inicio = c(0, 0.00, 10.00),
+  Fin = c(0.01, 5.00, 10.00)
+)
+
+kable(df)
+```
+
+::: {.incremental}
+
+- Detectados tienen mismo valor en ambas columnas.
+- Son generalmente usados por software comerciales para `métodos paramétricos` de data censoriada (**Maximun likelihood**).
+
+:::
+
+## Going to sleep
+
+::: {.nonincremental}
+
+- Eat spaghetti
+- Drink wine
+
+:::
+
+# Rstudio demo
+
+## Slide with a pause
+
+content before the pause
+
+. . .
+
+content after the pause
+
+
+## Not Alone
+
+:::: {.columns align=center totalwidth=8em}
+
+::: {.column width="40%"}
+contents...
+:::
+
+::: {.column width="60%" align=bottom}
+contents...
+:::
+
+:::: 
+
+
+## Nowlone
+
+::::  {.columns align=top .onlytextwidth}
+
+::: {.column width="40%" align=center}
+contents...
+:::
+
+::: {.column width="60%"}
+contents...
+:::
+
+:::: 
+
+### Revenue management
+
+#### Definition
+
+Cheese rocks^[especially French cheese]
+
+
+# Leyendo data

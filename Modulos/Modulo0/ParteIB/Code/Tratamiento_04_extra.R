@@ -122,7 +122,6 @@ levelplot(out_sm_raster)
 
 # escribir el nuevo geotiff:
 writeRaster(out_sm_raster, filename="Modulos/Modulo0/ParteIB/Geodatabase/Resample/cu_model.tif", overwrite=TRUE) 
-
 mapview::mapview(out_sm_raster)
 
 

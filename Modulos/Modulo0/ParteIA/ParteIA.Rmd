@@ -975,24 +975,17 @@ if (cantidad<50) {
 ---
 ```{r}
 #Realizaremos los siguientes ejemplos (seguir la correcta estructura):
-x <- c("yo","engaño","con el curso")
-if ("Con el curso" %in% x) {
-	print("Con el curso no me va bien")
-} else  if ("con el curso" %in% x) {
-	print ("Con el curso me va bien")
-} else {
-	print("Yo fui engañado con este curso")
-}
-
-p <- runif (10,0,20)
-Vec_Booleano <- p>=14
-NumAprob1 <- length(p)-5
-NumAprob2 <- length(Vec_Booleano[Vec_Booleano==TRUE])
-which(Vec_Booleano)
-
-if (NumAprob1>0){
-  p[which(Vec_Booleano)]
-   }
+set.seed(123)
+x <- rnorm(10, mean = 18, sd = 5.8)
+# Calcular cuantiles
+Q1 <- quantile(x, 0.25)
+Q3 <- quantile(x, 0.75)
+# Categorize the data using ifelse
+categories <- ifelse(x < Q1, "bajo",
+                     ifelse(x >= Q1 & x <= Q3, "medio", "alto"))
+# Combinar data para visualizacion en data frame
+result <- data.frame(Value = x, Category = categories)
+print(result)
 ```
 
 ---
@@ -1015,26 +1008,6 @@ system.time(length(Vec_Booleano2[Vec_Booleano2==TRUE]))
 
 ---
 
-```{r}
-#El Ejemplo final:.
-#Score <- as.integer(readline("Ingresa tu nota : "))
-Score <- 20
-if(Score >= 19){
-print("Excelente!!")
-print("Llevarás el curso tratamiento estadístico GRATIS!!")
-} else if (Score >= 16){
-print("Felicidades!!")
-print("Llevarás el curso tratamiento estadístico pagando 5 soles!!")
-} else if (Score>=14){
-print("Felicidades!!")
-print("Llevarás el curso tratamiento estadístico pagando 50 soles!!")
-} else {
-print("No has sido elegido !!")
-print("Lo sentimos paga el precio completo 5000 soles")
-}
-```
-
----
 # FOR LOOP
 
 Un **for loop** es muy útil cuando necesitamos itinerar sobre una lista de elementos o un  rango de números. Loops pueden usarse para itinerar sobre una lista, dataframe, vector, matriz o cualquier otro objeto. 
@@ -1140,31 +1113,32 @@ help(“paste”)
 
 ---
 
-.pull-left[
 ```{r}
-#Otros ejemplos:
-x <- c("a","b","c","d")
-seq_along(x)
-for (i in seq_along(x)){
-print(x[i])
+# Semilla para reproducibilidad
+set.seed(123)
+# Generar la data
+data_model <- rnorm(n = 10, mean = 5.8, sd = 2.4)
+# Calcular cuantiles
+Q1 <- quantile(data_model, 0.25)
+Q3 <- quantile(data_model, 0.75)
+# Vector inizializado para guardar categorias
+categories <- character(length(data_model))
+# Categorizar la data basado en cuantiles
+for (i in seq_along(data_model)) {
+  if (data_model[i] < Q1) {
+    categories[i] <- "bajo"
+  } else if (data_model[i] >= Q1 & data_model[i] <= Q3) {
+    categories[i] <- "medio"
+  } else {
+    categories[i] <- "alto"
+  }
 }
+# Combinar la data y categorias en un datagrame
+result <- data.frame(Value = data_model, Category = categories)
+# Imprimir el resultado
+print(result)
 ```
-]
 
-#Consultar el help de R:
-help(“seq_along”)	
-
-.pull-right[
-```{r}
-x <- matrix(1:6,2,3)
- for (i in seq_len(nrow(x))){
-  for (j in seq_len(ncol(x))){
-print (x[i,j])
-}
-}
-
-```
-]
 
 ---
 
