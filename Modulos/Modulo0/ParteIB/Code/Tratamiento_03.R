@@ -1,4 +1,4 @@
-#### TRABAJANDO CON SHAPEFILES ####
+#### Caso 7: Geoanálisis de información con SHAPEFILES ####
 # ALGORITMOS BASICOS:
 
 # Upload data Amazonas:

@@ -1,4 +1,4 @@
-# Load libraries for the FIGMM online course 
+# Load libraries for the Data Geoscience online course 
 loadlibs <- function(x =0){
   # data base packages
   require(DBI)
@@ -14,6 +14,7 @@ loadlibs <- function(x =0){
   require (sf)
   require(sp)
   require(mapview)
+  require(leaflet)
   # raster data
   require(terra)
   # deployment

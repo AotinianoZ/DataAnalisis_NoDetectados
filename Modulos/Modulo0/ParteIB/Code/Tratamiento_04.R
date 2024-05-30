@@ -1,4 +1,4 @@
-#### TRABAJANDO CON RASTER ####
+#### Geoanálisis de información con data RASTER ####
 # ALGORITMOS BASICOS:
 
 # carga de datos:
