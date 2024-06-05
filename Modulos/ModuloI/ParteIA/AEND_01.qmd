@@ -135,7 +135,57 @@ knitr::include_graphics(path="Graficos/AEDND_01_2.png")
 
 ## Configurando el Límite de Detección
 
+No es sencillo medir una señal de 0 , por este motivo usamos un ruido alrededor de una solución estándar (**muy baja!**) = desviacion std (*s*), por ende asumimos el ruido alrededor de 0. Actualmente, se toma un modelo de regresión para calcular *s* en función dela concetración.
 
+```{r, out.height='60%', fig.align='center'}
+# Set up the plotting area to have 1 row and 2 columns
+par(mfrow=c(1, 2))
+# First plot: Asumido
+distribucion <- rnorm(100000, mean = 0, sd = 1)
+dens <- density(distribucion)
+plot(dens, main="Asumido")
+abline(v = 0, col = "red", lwd = 2)
+sd_value <- sd(distribucion)
+abline(v = sd_value, col = "blue", lwd = 2, lty = 2)
+abline(v = -sd_value, col = "blue", lwd = 2, lty = 2)
+# Second plot: Medido
+distribucion <- rnorm(100000, mean = 2, sd = 1)
+dens <- density(distribucion)
+plot(dens, main="Medido")
+abline(v = 2, col = "red", lwd = 2)
+sd_value <- sd(distribucion)
+abline(v = sd_value+2, col = "blue", lwd = 2, lty = 2)
+abline(v = -sd_value+2, col = "blue", lwd = 2, lty = 2)
+```
+
+## El Nivel Crítico
+
+Se considera que $3.14*s > 0$ debería tener un chance de solo **1%** de realmente originar una concentración de 0, asumiendo una distribución normal.
+
+```{r, out.height='70%', fig.align='center'}
+distribucion <- rnorm(100000, mean = 0, sd = 0.4)
+dens <- density(distribucion)
+plot(dens, main="3.14*s =  Critical Level Lc")
+abline(v = 0, col = "red", lwd = 2)
+abline(v = 0.78, col = "blue", lwd = 2)
+text(0.4, 0.05, "3.14*s", pos = 3, col = "black", cex = 1.5)
+arrows(x0=0, y0=0.05, x1=0.7, y1=0.05, col="black", lwd=1)
+text(1.2, 0.4, "Lc ~ evita FP", pos = 3, col = "red", cex = 1.5)
+text(1.2, 0.1, "Lc ~ 1% chance\n de exceder 0.78", pos = 3, col = "black", cex = 1.5)
+# polygon(c(dens$x[dens$x >= 0], 0), c(dens$y[dens$x >= 0], 0),
+#         col = rgb(1, 0, 0, alpha = 0.5), border = "red", main = "")
+polygon(c(dens$x[dens$x >= 0.78], max(dens$x), 0.78),
+        c(dens$y[dens$x >= 0.78], 0, 0),
+        col = "black", border = NA)
+```
+
+## Concepto primario
+
+Una señal de verdadero cero es improbable a ser medido sobre este treshold (critical level). Evita dalso positivo, pero no falso negativo.
+
+```{r, out.height='60%', fig.align='center', fig.cap='Conceptos de FP y FN'}
+knitr::include_graphics(path="Graficos/AEDND_01_3.png")
+```
 
 # Formato de puntos finales
 
