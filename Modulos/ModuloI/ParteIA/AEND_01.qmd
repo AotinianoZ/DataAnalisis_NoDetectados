@@ -1,6 +1,6 @@
 ---
 title: "Data Análisis con No Detectados"
-subtitle: "Límites Reportados y Detectados"
+subtitle: "Límites Reportados y Configuración"
 author: "Ing. A.Otiniano"
 institute: "UNI"
 date: "`r Sys.Date()`"
@@ -55,7 +55,7 @@ header-includes:
     - censado-izquierdo: >1         ---> 1
     - **intervalo censado (0 a 1)** [0 <---> 1], más usado.
 
-# Breve Historia de Estadistica de Datos Censados
+# Breve Historia de la Estadistica de Datos Censados
 
 ## Trabajos Realizados
 
@@ -75,7 +75,7 @@ header-includes:
 
 * La información fue reconocida gracias a Hesel con el libro [Nondetects And Data Analysis 2005](https://www.researchgate.net/publication/264946174_Nondetects_And_Data_Analysis_Statistics_for_Censored_Environmental_Data)
 
-* Existe información de su aplicabilidad en sedimentos de quebrada, aguas y suelos, en roca en mucho menor proporción.
+* Existe información de su aplicabilidad en sedimentos de quebrada, aguas y suelos, en roca en menor proporción.
 :::
 
 ::::
@@ -90,31 +90,13 @@ knitr::include_graphics(path="Graficos/AEDND_01_1.PNG")
 
 ## Conceptos de Límites de Reporte
 
-Los textos pueden ser usados como indicadores (**no es recomendable**):
-
-```{r}
-library(knitr)
-df <- data.frame(
-  Lab = c("<0.01", "<5.00", "10.00"),
-  Conc = c(0.01, 5.00, 10.00),
-  Remarcado = c("E,J,<,etc", "<", "Detected,`  `,etc")
-)
-
-kable(df)
-```
-
-Los números o textos pueden ser usados para diferenciar el LD del LQ, pero el *intervalo de puntos finales* es más apropiado para eso.  
-
-## Conceptos de Límites de cambio
-
-Es considerado un termino **general**, calculado para una variedad de usos y formas.
+Es considerado un término **general**, calculado para una variedad de usos y formas.
 Existen dos tipos principales de límite de reporte:
 
   * Límite de detección.
   * Límite de cuantificación.
   
 Desviación estándar asumida ser constante.
-
 
 ## Clases
 
@@ -143,7 +125,7 @@ par(mfrow=c(1, 2))
 # First plot: Asumido
 distribucion <- rnorm(100000, mean = 0, sd = 1)
 dens <- density(distribucion)
-plot(dens, main="Asumido")
+plot(dens, main="Asumido", cex.main = 1.5)
 abline(v = 0, col = "red", lwd = 2)
 sd_value <- sd(distribucion)
 abline(v = sd_value, col = "blue", lwd = 2, lty = 2)
@@ -151,7 +133,7 @@ abline(v = -sd_value, col = "blue", lwd = 2, lty = 2)
 # Second plot: Medido
 distribucion <- rnorm(100000, mean = 2, sd = 1)
 dens <- density(distribucion)
-plot(dens, main="Medido")
+plot(dens, main="Medido", cex.main = 1.5)
 abline(v = 2, col = "red", lwd = 2)
 sd_value <- sd(distribucion)
 abline(v = sd_value+2, col = "blue", lwd = 2, lty = 2)
@@ -165,13 +147,13 @@ Se considera que $3.14*s > 0$ debería tener un chance de solo **1%** de realmen
 ```{r, out.height='70%', fig.align='center'}
 distribucion <- rnorm(100000, mean = 0, sd = 0.4)
 dens <- density(distribucion)
-plot(dens, main="3.14*s =  Critical Level Lc")
+plot(dens, main="3.14*s =  Critical Level Lc", cex.main = 1.5)
 abline(v = 0, col = "red", lwd = 2)
 abline(v = 0.78, col = "blue", lwd = 2)
 text(0.4, 0.05, "3.14*s", pos = 3, col = "black", cex = 1.5)
 arrows(x0=0, y0=0.05, x1=0.7, y1=0.05, col="black", lwd=1)
-text(1.2, 0.4, "Lc ~ evita FP", pos = 3, col = "red", cex = 1.5)
-text(1.2, 0.1, "Lc ~ 1% chance\n de exceder 0.78", pos = 3, col = "black", cex = 1.5)
+text(1.4, 0.4, "Lc ~ evita FP", pos = 3, col = "red", cex = 1.5)
+text(1.4, 0.1, "Lc ~ 1% chance\n de exceder 0.78", pos = 3, col = "black", cex = 1.5)
 # polygon(c(dens$x[dens$x >= 0], 0), c(dens$y[dens$x >= 0], 0),
 #         col = rgb(1, 0, 0, alpha = 0.5), border = "red", main = "")
 polygon(c(dens$x[dens$x >= 0.78], max(dens$x), 0.78),
@@ -181,90 +163,162 @@ polygon(c(dens$x[dens$x >= 0.78], max(dens$x), 0.78),
 
 ## Concepto primario
 
-Una señal de verdadero cero es improbable a ser medido sobre este treshold (critical level). Evita dalso positivo, pero no falso negativo.
+Una señal de verdadero cero es improbable a ser medido sobre este **treshold** (critical level). Evita falso positivo, pero no falso negativo.
 
 ```{r, out.height='60%', fig.align='center', fig.cap='Conceptos de FP y FN'}
 knitr::include_graphics(path="Graficos/AEDND_01_3.png")
 ```
 
-# Formato de puntos finales
+# Configuración de Límites
 
-## Puntos finales
+## Límite de Detección (Ld)
 
-La primera columna es el límite inferior la segunda es el límite superior.
+:::: {.columns}
+::: {.column width="50%"}
+* Para evitar los falsos negativos se configura un límite más alto, Límite de Detección (Ld).
 
-```{r}
-library(knitr)
-df <- data.frame(
-  Lab = c("<0.01", "<5.00", "10.00"),
-  Inicio = c(0, 0.00, 10.00),
-  Fin = c(0.01, 5.00, 10.00)
-)
+* Una concentración verdadea a un límite más alto que Ld tiene 1% de chance de ser medida y reportada como <Lc. Esto todavía tiene un 50% de chance de ser medido y reportado como <Ld,
 
-kable(df)
+:::
+
+::: {.column width="50%"}
+```{r, out.height='70%', fig.align='center', fig.cap='Límite de Detección'}
+distribucion <- rnorm(100000, mean = 40, sd = 10)
+dens <- density(distribucion)
+plot(dens, main="Ld", cex.main = 1.5)
+abline(v = 40, col = "red", lwd = 2)
+sd_value <- sd(distribucion)
+abline(v = 2*sd_value, col = "blue", lwd = 2, lty = 2)
+text(17, 0.01, "Lc", pos = 3, col = "red", cex = 2)
+text(0, 0.026, labels= expression(paste("L"[c], " ~ β = 1%")), pos = 3, col="red", , cex = 2)
+arrows(x0=0, y0=0.025, x1=15, y1=0.002, length=0.2, lty=1)
+polygon(c(min(dens$x), dens$x[dens$x <= 20], 20), 
+        c(0, dens$y[dens$x <= 20], 0), 
+        col = "red", border = NA)
+```
+:::
+
+::::
+
+## Límite de Detección (Ld)
+
+Práctica estándar: $alpha=beta$ =1%, Ld = 2*Lc. 
+
+```{r, out.height='70%', fig.align='center', fig.cap='Límite de Detección'}
+distribucion <- rnorm(100000, mean = 40, sd = 10)
+dens <- density(distribucion)
+plot(dens, main="Ld", cex.main = 1.5)
+abline(v = 40, col = "black", lwd = 2)
+sd_value <- sd(distribucion)
+abline(v = 40+2*sd_value, col = "blue", lwd = 2, lty = 2)
+abline(v = 40-2*sd_value, col = "blue", lwd = 2, lty = 2)
+text(17, 0.01, "Lc", pos = 3, col = "red", cex = 2)
+
+text(0, 0.026, labels= expression(beta == paste(1, "%")), pos = 3, col="red", cex = 2)
+text(70, 0.026, labels= expression(alpha == paste(1, "%")), pos = 3, col="red", , cex = 2)
+arrows(x0=0, y0=0.025, x1=15, y1=0.002, length=0.2, lty=1)
+arrows(x0=70, y0=0.025, x1=65, y1=0.002, length=0.2, lty=1)
+
+polygon(c(min(dens$x), dens$x[dens$x <= 40-2*sd_value], 40-2*sd_value), 
+        c(0, dens$y[dens$x <= 40-2*sd_value], 0), 
+        col = "red", border = NA)
+polygon(c(dens$x[dens$x >= 40+2*sd_value], max(dens$x), 40+2*sd_value),
+        c(dens$y[dens$x >= 40+2*sd_value], 0, 0),
+        col = "black", border = NA)
 ```
 
-::: {.incremental}
+## Concepto primario
 
-- Detectados tienen mismo valor en ambas columnas.
-- Son generalmente usados por software comerciales para `métodos paramétricos` de data censoriada (**Maximun likelihood**).
+Una concentración verdadera en level crítico y puede ser 0, es improbable a ser medido sobre el límite de detección. Esto no evita falsos negativos para valores por encima del Ld ser llamados <Ld.
 
+
+## Límite de Cuantificación (Ld)
+
+* Es más alto que el **threshold** que el Ld.
+* Sobre el Lc un número reportado como un simple número es confiable.
+* Usualmente basado en una señal de radio de ruido.
+
+## Configuración del Límite de Cuantificación (Ld)
+
+* Límite de cuantificación es seteado a varios valores, usualmente es igual a 10 veces el ruido (`signal/noise = 10`).
+
+$$ 10*s = 3.18*(3.14*s) = 3.18*Lc$$
+
+Esto es $1.6*Ld$. Usualmente redondeado a $2*Ld$. La definición más común es $2*Ld$.
+
+* Otros multiplos son usados $5*Ld$, etc. Eso es dependiendo del laboratorio y los métodos o pautas que usan para su elección.
+
+## Concepto primario
+
+Sobre ese nivel la señal es suficientemente grande mayor que el ruido para reportar como un simple número confiable.
+
+## Notaciones usadas
+
+Entre el `Ld` y el `Lc` existen observaciones las cuales no son cero, pero aún son muy variables para ser reportadas como un número simple. Laboratorios tiene difrentes formas de reportarlo como:
+
+    * "valores J", "valores E" y "data remarcada".
+
+Un valor remarcado (4J) no puede ser verdadero certeramente abajo o encima de otro (5J). Demasiado ruido.
+
+
+# Data entre Límites
+
+## Datan entre Límites
+
+:::: {.columns}
+::: {.column width="50%"}
+
+* Es acordado que la data sobre el Lc es reporta como un simple número.
+
+* La mayoría acuerda que debajo del Ld es reportado como desde 0 hasta el Ld (intervalo) o <Ld.
+
+* No existe una convención sobre que hacer con data entre el Ld y Lc. Existen tres opciones validas.
 :::
 
-## Going to sleep
+::: {.column width="50%"}
+```{r, out.width='90%', fig.align='center', fig.cap='Data entre límites'}
+knitr::include_graphics(path="Graficos/AEDND_01_4.png")
+```
+:::
+::::
 
-::: {.nonincremental}
+## Data entre Límites
 
-- Eat spaghetti
-- Drink wine
+:::: {.columns}
+::: {.column width="50%"}
 
+* Tres métodos son los más usados para el límite de reporte entre los cuales están:
+
+  *  Usa el límite de cuantificación (Lc) como el límite de reporte para todos los valores medidos debajo del límite de cuantificación (Lc).
+
+  * Use el límite de detección (Ld) como el límite de reporte.
+
+  * Usar métodos de intervalo censoreado.
 :::
 
-# Rstudio demo
-
-## Slide with a pause
-
-content before the pause
-
-. . .
-
-content after the pause
-
-
-## Not Alone
-
-:::: {.columns align=center totalwidth=8em}
-
-::: {.column width="40%"}
-contents...
+::: {.column width="50%"}
+```{r, out.height='80%', fig.align='center'}
+knitr::include_graphics(path="Graficos/AEDND_01_5-01.png")
+```
 :::
-
-::: {.column width="60%" align=bottom}
-contents...
-:::
-
-:::: 
+::::
 
 
-## Nowlone
+# Sumario
 
-::::  {.columns align=top .onlytextwidth}
+## Sumario de Límites
 
-::: {.column width="40%" align=center}
-contents...
-:::
+* Límite de detección (Ld): debajo podría ser concentración cero.
 
-::: {.column width="60%"}
-contents...
-:::
+* Límite de cuantificación (Ld): debajo esta la data con mucho ruido para ser reportado como un simple número.
 
-:::: 
+* Data puede ser propiamente censada:
+  * Al límite de cuantificación (Lc).
+  * Al límite de detección (Ld).
+  * Dentro de dos intervaloes (0 a Ld) o (Ld a Lc).
 
-### Revenue management
-
-#### Definition
-
-Cheese rocks^[especially French cheese]
+* No usar censado interno, o data será sesgada hacia arriba con una incorrecta *cummulative distribution function (cdf)*. Si es usado por el laboratorio, re-censorear toda la data al Lc.
 
 
-# Leyendo data
+
+
