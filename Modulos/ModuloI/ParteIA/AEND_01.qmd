@@ -263,7 +263,7 @@ Un valor remarcado (4J) no puede ser verdadero certeramente abajo o encima de ot
 
 # Data entre Límites
 
-## Datan entre Límites
+## Data entre Límites
 
 :::: {.columns}
 ::: {.column width="50%"}
@@ -303,6 +303,26 @@ knitr::include_graphics(path="Graficos/AEDND_01_5-01.png")
 :::
 ::::
 
+## Censado Interno
+
+:::: {.columns}
+::: {.column width="50%"}
+
+* **Evitar data con censado interno**, produce estimacion desviada de hacia arriba de la media e forma incorrecta:
+
+  * Data como medida.
+
+  * Reportada como medida <Ld como <Lc.
+
+  * Data reportada sesgada.
+:::
+
+::: {.column width="50%"}
+```{r, out.height='80%', fig.align='center'}
+knitr::include_graphics(path="Graficos/AEDND_01_7.png")
+```
+:::
+::::
 
 # Sumario
 
@@ -317,7 +337,7 @@ knitr::include_graphics(path="Graficos/AEDND_01_5-01.png")
   * Al límite de detección (Ld).
   * Dentro de dos intervaloes (0 a Ld) o (Ld a Lc).
 
-* No usar censado interno, o data será sesgada hacia arriba con una incorrecta *cummulative distribution function (cdf)*. Si es usado por el laboratorio, re-censorear toda la data al Lc.
+* No usar censado interno, o la data será sesgada hacia arriba con una incorrecta *cummulative distribution function (cdf)*. Si es usado por el laboratorio, re-censorear toda la data al Lc.
 
 
 
