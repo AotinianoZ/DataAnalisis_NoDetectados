@@ -1,0 +1,74 @@
+---
+title: "Ploteando No Detectados"
+subtitle: "Presentation by Ing. A.Otiniano"
+author: "Ing. A.Otiniano"
+institute: "UNI"
+output: 
+  beamer_presentation:
+    theme: "CambridgeUS"
+    #colortheme: "dolphin"
+    fonttheme: "professionalfonts"
+    toc: true # Table of contents
+    slide_level: 2  # Enable subsections (optional)
+    keep_tex: false # keeps the .tex generated (also images)
+    latex_engine: xelatex # Latex engine
+    incremental: true
+    includes:
+      in_header: mystyle.tex
+date: "`r Sys.Date()`"
+header-includes: # format latex (you can add from latex)
+- \logo{\includegraphics[width= 2cm]{figura/logo.png}}
+  \AtBeginDocument{\setbeamertemplate{navigation symbols}[horizontal]}  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Objetivos 
+
+* Entender el concepto de  **Survival Analysis**.
+
+* Conocer los diferentes **Límites de Reporte**.
+
+* Diferenciar los **Límites de Detección y Cuantificación**.
+
+# R Markdown
+
+## Data
+
+This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+
+## Slide with Bullets
+
+\begincols
+  \begincol{.30\textwidth}
+
+This slide has two columns.
+
+  \endcol
+\begincol{.70\textwidth}
+
+```{r}
+#No error here i can run any r code
+plot(cars)
+```
+
+  \endcol
+\endcols
+
+
+# Slide with R Output
+
+```{r cars, echo = TRUE}
+summary(cars)
+```
+
+# Slide with Plot
+
+```{r pressure, out.width='80%', fig.align='center', fig.cap='Ploteo'}
+plot(pressure)
+```
+
