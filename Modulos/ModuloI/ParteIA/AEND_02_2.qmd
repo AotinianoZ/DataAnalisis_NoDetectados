@@ -1,0 +1,55 @@
+---
+title: "Data Análisis con No Detectados"
+subtitle: "Guardando No detectados (ND) en Base de Datos"
+author: "Ing. A.Otiniano"
+institute: "UNI"
+date: "`r Sys.Date()`"
+format: 
+  beamer: 
+    #logo: "figura/logo.png"
+    aspectratio: 32
+    navigation: horizontal
+    theme: CambridgeUS   
+    # colortheme: lily
+    fonttheme: professionalfonts
+    highlight: monochrome
+    progressbar: true
+    toc: true
+    incremental: true
+    urlcolor: blue
+    keep_tex: true
+header-includes:
+  - \usepackage{eso-pic}  # Required for positioning elements
+  - |
+    \AddToShipoutPictureFG*{
+      \AtPageLowerLeft{
+        \put(20,20){\includegraphics[width=2.5cm]{figura/logo.png}} 
+      }
+    }
+---
+
+## Data Real de Laboratorio
+
+```{r, out.width='80%', fig.align='center', fig.cap='Database Laboratorio'}
+knitr::include_graphics(path="Graficos/AEDND_02_1.png")
+```
+
+## Indicador Final
+
+Los textos pueden ser usados como indicadores (**no es recomendable**):
+  
+```{r}
+library(knitr)
+df1 <- data.frame(
+  Lab = c("<0.01", "<5.00", "10.00"),
+  Conc = c(0.01, 5.00, 10.00),
+  Remarcado = c("E,J,<,etc", "<", "Detected,`  `,etc")
+)
+
+kable(df1)
+```
+
+Los números o textos pueden ser usados para diferenciar el LD del LQ, pero el *intervalo de puntos finales* es más apropiado para eso.  
+
+
+

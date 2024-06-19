@@ -36,7 +36,7 @@ header-includes:
 ```
 
 
-## Objetivos del guardado de datos ND
+## Objetivos 
 
 * Las observaciones censadas y detectadas deben ser claramente **distingidas**.
 
@@ -57,7 +57,6 @@ Los siguientes métodos son los más importantes:
 ## Indicador de columna
 
 :::: {.columns}
-
 ::: {.column width="40%"}
 ```{r}
 library(knitr)
@@ -75,7 +74,6 @@ kable(df)
 * Segunda columna es el indicador. `1 = censored value`.
 
 :::
-
 ::: {.column width="60%"}
 
 * En R, la segunda columna debemos transformarla a una variable de tipo lógico **TRUE/FALSE** con $1=TRUE$. Esto es realizado mediante el siguiente código.
@@ -85,7 +83,6 @@ attach(df) # name of dataframe
 Con_cen <- as.logical(Con_cen)
 ```
 :::
-
 ::::
 
 ## Data Real de Laboratorio
@@ -94,101 +91,48 @@ Con_cen <- as.logical(Con_cen)
 knitr::include_graphics(path="Graficos/AEDND_02_1.png")
 ```
 
-## Indicador de columna
+## Indicador Final
 
 Los textos pueden ser usados como indicadores (**no es recomendable**):
-
+  
 ```{r}
 library(knitr)
-df <- data.frame(
+df1 <- data.frame(
   Lab = c("<0.01", "<5.00", "10.00"),
   Conc = c(0.01, 5.00, 10.00),
   Remarcado = c("E,J,<,etc", "<", "Detected,`  `,etc")
 )
 
-kable(df)
+kable(df1)
 ```
 
 Los números o textos pueden ser usados para diferenciar el LD del LQ, pero el *intervalo de puntos finales* es más apropiado para eso.  
 
-# Formato de puntos finales
-
 ## Puntos finales
 
+:::: {.columns}
+::: {.column width="50%"}
 La primera columna es el límite inferior la segunda es el límite superior.
 
 ```{r}
 library(knitr)
-df <- data.frame(
+df2 <- data.frame(
   Lab = c("<0.01", "<5.00", "10.00"),
   Inicio = c(0, 0.00, 10.00),
   Fin = c(0.01, 5.00, 10.00)
 )
 
-kable(df)
+kable(df2)
 ```
 
-::: {.incremental}
+:::
 
+::: {.column width="50%"}
 - Detectados tienen mismo valor en ambas columnas.
 - Son generalmente usados por software comerciales para `métodos paramétricos` de data censoriada (**Maximun likelihood**).
-
 :::
 
-## Going to sleep
-
-::: {.nonincremental}
-
-- Eat spaghetti
-- Drink wine
-
-:::
-
-# Rstudio demo
-
-## Slide with a pause
-
-content before the pause
-
-. . .
-
-content after the pause
+::::
 
 
-## Not Alone
 
-:::: {.columns align=center totalwidth=8em}
-
-::: {.column width="40%"}
-contents...
-:::
-
-::: {.column width="60%" align=bottom}
-contents...
-:::
-
-:::: 
-
-
-## Nowlone
-
-::::  {.columns align=top .onlytextwidth}
-
-::: {.column width="40%" align=center}
-contents...
-:::
-
-::: {.column width="60%"}
-contents...
-:::
-
-:::: 
-
-### Revenue management
-
-#### Definition
-
-Cheese rocks^[especially French cheese]
-
-
-# Leyendo data
