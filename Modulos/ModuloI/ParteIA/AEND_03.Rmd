@@ -1,5 +1,5 @@
 ---
-title: "Ploteando No Detectados"
+title: "Ploteando No Detectados (ND)"
 subtitle: "Presentation by Ing. A.Otiniano"
 author: "Ing. A.Otiniano"
 institute: "UNI"
@@ -27,48 +27,352 @@ knitr::opts_chunk$set(echo = FALSE)
 
 # Objetivos 
 
-* Entender el concepto de  **Survival Analysis**.
+* Conocer y usar los  **boxplots**.
 
-* Conocer los diferentes **Límites de Reporte**.
+* Conocer y usar los **X-Y scatterplots**.
 
-* Diferenciar los **Límites de Detección y Cuantificación**.
+* Interpretar y usar las **Probability Density Functions (pdf)**.
 
-# R Markdown
+* Interpretar y usar las **Cumulative Distribution Functions (cdf)**.
 
-## Data
+* Conocer los **plots de probabilidad**.
 
-This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+# Boxplots
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
-
-## Slide with Bullets
+## Boxplots estructura
 
 \begincols
   \begincol{.30\textwidth}
 
-This slide has two columns.
+1. Centrado
+
+2. Variabilidad (*IQR*)
+
+3. *Asimetría*
+
+4. Outliers - Faroutliers
 
   \endcol
 \begincol{.70\textwidth}
 
-```{r}
-#No error here i can run any r code
-plot(cars)
+```{r, warning=FALSE, message=FALSE}
+# Load the necessary libraries
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+# Generate some example data
+set.seed(123)  # for reproducibility
+information <- data.frame(
+  group = rep(c("A", "B"), each = 100),
+  value = c(rlnorm(100, meanlog = 0, sdlog = 1), rnorm(100, mean = 7))
+)
+
+# Calculate summary statistics for annotations
+summary_data <- information %>%
+  group_by(group) %>%
+  summarise(
+    Q1 = quantile(value, 0.25),
+    Median = quantile(value, 0.50),
+    Q3 = quantile(value, 0.75),
+    Max = max(value),
+    Min = min(value)
+  ) %>%
+  gather(key = "stat", value = "value", -group)
+
+# Calculate mean for each group
+mean_data <- information %>%
+  group_by(group) %>%
+  summarise(mean_value = mean(value))
+
+# Create the boxplot
+p <- ggplot(information, aes(x = group, y = value)) +
+  geom_boxplot(outlier.colour = "red", outlier.shape = 16, outlier.size = 2) +
+  geom_point(data = mean_data, aes(y = mean_value), color = "blue", size = 3) +
+  labs(title = "Boxplot with Quantiles, IQR, Max, Min, Outliers, and Mean",
+       x = "Group",
+       y = "Value")
+
+# Add annotations for quantiles, IQR, max, and min
+p + geom_text(data = summary_data, aes(label = stat, y = value),
+              position = position_dodge(width = 0.75),
+              size = 3, hjust = -0.5, vjust = -0.5)
 ```
 
   \endcol
 \endcols
 
+## Boxplot con ND
 
-# Slide with R Output
-
-```{r cars, echo = TRUE}
-summary(cars)
+```r
+cboxplot(mina.Zn,mina.cen.Zn,xgroup=Subcuenca,LOG=TRUE)
 ```
 
-# Slide with Plot
+\begincols
+  \begincol{.40\textwidth}
 
-```{r pressure, out.width='80%', fig.align='center', fig.cap='Ploteo'}
-plot(pressure)
+a) Buena forma de ilustrar diferencias entre grupos.
+
+
+b) Sobre el máximo Ld, es identico a un boxplot que podría haber dibujado para la misma data sin límite de detección.
+
+
+c) No estimaciones debajo del **maxLd** son mostradas por defecto.
+
+  \endcol
+\begincol{.60\textwidth}
+
+```{r, warning=FALSE, message=FALSE}
+library(tidyverse)
+db_puno <- readxl::read_xlsx(path = "Geodatabase/BD_GA47D_PUNO CONSOLIDADO_FINAL.xlsx")
+elements <- c("Fe","Zn")
+
+for (element in elements) {
+  col_dis <- paste0(element, "_dis")
+  col_valdis <- paste0(element, "_valdis")
+  col_valdis_cen <- paste0(element, "_valdis_cen")
+  
+  db_puno[[col_valdis]] <- as.numeric(str_remove(db_puno[[col_dis]], pattern = "<"))
+  db_puno[[col_valdis_cen]] <- ifelse(str_detect(db_puno[[col_dis]], pattern = "<"), TRUE, FALSE)
+}
+
+NADA2::cboxplot(x1 = db_puno$Zn_valdis, db_puno$Zn_valdis_cen, 
+                xgroup = db_puno$Subcuenca, LOG = TRUE)
 ```
+
+  \endcol
+\endcols
+
+## Boxplot con ND2
+
+\begincols
+  \begincol{.40\textwidth}
+  
+1. Porción debajo del max Ld es estimado con ROS y mostrada con `shown=TRUE`.
+
+2. Estimados son sombreados con gris para indicar incertidumbre.
+
+3. No usar `mimax=TRUE` da por defecto boxplot con outliers.
+
+  \endcol
+\begincol{.60\textwidth}
+
+```{r, warning=FALSE, message=FALSE}
+NADA2::cboxplot(x1 = db_puno$Zn_valdis, db_puno$Zn_valdis_cen, 
+                xgroup = db_puno$Temporada, LOG = TRUE, minmax = TRUE, show = TRUE)
+```
+
+  \endcol
+\endcols
+
+# X-Y Scatterplots
+
+## X-Y Scatterplots with ND
+
+```r
+cenxyplot(Zn, Zn_cen, Fe, Fe_cen, log="xy")
+```
+\begincols
+  \begincol{.30\textwidth}
+1. Puntos detectados son ploteados individualmente.
+
+2. No detectados son mostrado como un intervalo (líneas punteadas).
+
+3. El eje x e y están en escala logarítmica.
+
+  \endcol
+\begincol{.70\textwidth}
+
+```{r xyscatter, out.width='80%', fig.align='center', fig.cap='X-Y Scatterplot LogscaleXY'}
+NADA::cenxyplot(x = db_puno$Zn_valdis, xcen = db_puno$Zn_valdis_cen,
+                y = db_puno$Fe_valdis, ycen = db_puno$Fe_valdis_cen,
+                xlab ="Concentracion de Zn (mg/l)", ylab="Concentracion de Fe(mg/l)",
+                log = "xy")
+```
+
+  \endcol
+\endcols
+
+## X-Y Scatterplots with ATS line
+
+\begincols
+  \begincol{.30\textwidth}
+
+1. El formato es: `ATS(y,ycen, x, xcen, LOG=FALSE)`
+
+2. Existen algunos no detectados como lineas punteadas en la base.
+
+
+  \endcol
+\begincol{.70\textwidth}
+
+```{r xyscatterATS, out.width='80%', fig.align='center', warning=FALSE, message=FALSE, comment=FALSE, results='hide'}
+NADA2::ATS(y.var = db_puno$Zn_valdis, y.cen = db_puno$Zn_valdis_cen,
+           x.var = db_puno$Fe_valdis, x.cen = db_puno$Fe_valdis_cen,
+           LOG = TRUE,
+           xlabel = "Concentracion de Fe (mg/l)", ylabel ="Concentracion de Zn (mg/l)")
+```
+  \endcol
+\endcols
+
+# Función de Probabilidad de Densidad (pdf)
+
+## PDF
+\begincols
+  \begincol{.30\textwidth}
+
+1. La  familiar "curva de campana o Gausiana" de la distribución normal.
+
+  \endcol
+\begincol{.70\textwidth}
+
+```{r pdf1, out.width='100%', fig.align='center'}
+knitr::include_graphics(path="Graficos/AEDND_03_01.png")
+```
+  \endcol
+\endcols
+
+## PDF
+\begincols
+  \begincol{.30\textwidth}
+
+1. Una forma más realista para la data con no detectados son distribuciones asimétricas.
+
+2. Dos distribuciones simétricas comunes son Lognormal y Gamma.
+
+  \endcol
+\begincol{.70\textwidth}
+
+```{r pdf2, out.width='100%', fig.align='center'}
+knitr::include_graphics(path="Graficos/AEDND_03_02.png")
+```
+  \endcol
+\endcols
+
+## PDF  para datos censurados
+
+Histograma: una barra no es dibujada para datos censurados. No deectados no son mostrados. No existen valores para el 14% de data inferior, solo conocemos que estos son <2.
+
+\begincols
+  \begincol{.30\textwidth}
+
+1. El ajuste de la distribución debería tener un % dabajo de 2 similar al % en el set de datos.
+
+  \endcol
+\begincol{.70\textwidth}
+
+```{r pdf3, out.width='100%', fig.align='center'}
+knitr::include_graphics(path="Graficos/AEDND_03_03.png")
+```
+  \endcol
+\endcols
+
+
+# Función de Probabilidad de Densidad Acumulada (cdf)
+
+## CDF: Cummulative Distribution Functions
+
+
+\begincols
+  \begincol{.50\textwidth}
+
+```{r cdf1, out.width='100%', fig.align='center'}
+knitr::include_graphics(path="Graficos/AEDND_03_04_1.png")
+```
+  \endcol
+\begincol{.50\textwidth}
+
+```{r cdf2, out.width='100%', fig.align='center'}
+knitr::include_graphics(path="Graficos/AEDND_03_04_2.png")
+```
+  \endcol
+\endcols
+
+
+## CDF: Cummulative Distribution Functions
+
+
+\begincols
+  \begincol{0.30\textwidth}
+
+No NDs para comenzar, n = 10
+
+3.33
+2.19
+1.81
+1.33
+1.11
+0.91
+0.91
+0.81
+0.77
+$0.38$
+
+Los **saltos** son 1/n
+
+
+  \endcol
+\begincol{0.70\textwidth}
+
+```{r cdf3, out.width='100%', fig.align='center'}
+knitr::include_graphics(path="Graficos/AEDND_03_05.png")
+```
+  \endcol
+\endcols
+
+## CDF para datos censurados
+
+```{r cdf4, out.width='100%', fig.align='center'}
+knitr::include_graphics(path="Graficos/AEDND_03_06.png")
+```
+
+
+## Mejor Ajuste cdf para datos censurados
+
+\begincols
+  \begincol{0.30\textwidth}
+
+1. Data es mostrada como una step function. Caja color plomo esta debajo del menor Ld.
+
+2. Gamma parece el mejor ajuste, 2nd lognormal.
+
+3. Nota: solo la distribución normal estima debajo de 0.
+
+  \endcol
+\begincol{0.70\textwidth}
+
+```{r cdf5, out.width='100%', fig.align='center'}
+knitr::include_graphics(path="Graficos/AEDND_03_07.png")
+```
+  \endcol
+\endcols
+
+# Plots de Probabilidad (or Q-Q plots)
+
+## Q-Q plots para data con NDs
+
+\begincols
+  \begincol{0.40\textwidth}
+
+1. Plots de probabilidad <= valores de data para observaciones detectdas en el eje X.
+
+2. No detectados no son ploteados, pero espacios a la izquierda de las observaciones detectadas en percentiles es correcto.
+
+3. Una línea continua representa la disribución tales como la normal, lognormal o gamma.
+
+
+
+  \endcol
+\begincol{0.60\textwidth}
+
+4. PPCC mide el ajuste. Max PPCC=1. Escoger la distribución con mayor PPCC.
+
+```{r qq1, out.width='100%', fig.align='center'}
+knitr::include_graphics(path="Graficos/AEDND_03_08.png")
+```
+  \endcol
+\endcols
+
+
+
 
