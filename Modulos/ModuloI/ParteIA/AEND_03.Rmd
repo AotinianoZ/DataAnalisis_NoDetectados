@@ -23,6 +23,7 @@ header-includes: # format latex (you can add from latex)
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+suppressPackageStartupMessages(library(EnvStats))
 ```
 
 # Objetivos 
@@ -361,7 +362,6 @@ knitr::include_graphics(path="Graficos/AEDND_03_07.png")
 3. Una línea continua representa la disribución tales como la normal, lognormal o gamma.
 
 
-
   \endcol
 \begincol{0.60\textwidth}
 
@@ -372,6 +372,187 @@ knitr::include_graphics(path="Graficos/AEDND_03_08.png")
 ```
   \endcol
 \endcols
+
+## Q-Q plots para data con No Detectados
+
+\begincols
+  \begincol{0.50\textwidth}
+
+1. En vez de las probabilidades no lineales <= valor dato, software usualmente plotea una linea escalar. Una es quantiles normales.
+
+2. Quantiles normales son quantiles de la distribución normal con media=0 y sd=1.
+
+3. No detectados influencian en los cuantiles de los detectados.Aquí los menores valores detectados son justo menor que +1, cual esta a 78% del dataset.
+
+
+  \endcol
+\begincol{.50\textwidth}
+
+4. Aquíe el 78% del área de datos < menor límite de detección. Múltiplos Ld pueden ser incorporados.
+
+```{r qq2, out.width='100%', fig.align='center'}
+knitr::include_graphics(path="Graficos/AEDND_03_09.png")
+```
+  \endcol
+\endcols
+
+
+## Q-Q plots para ajustar distribución de datos con ND
+
+\begincols
+  \begincol{0.40\textwidth}
+
+1. Esto es ploteado correctamente.**30%** de no detectados no son mostrado como puntos, pero el espacio es reservado en la parte inferior.
+
+2. Encontraremos la rutina para hacer esto en "Survivial Analysis" o "Censored data" de los software estadísticos.
+
+3. El comando **qqPlotCensored()** en el paquete *EnvStats* es uno de estos.
+
+
+  \endcol
+\begincol{0.60\textwidth}
+
+
+```{r qq3, out.width='100%', fig.align='center'}
+knitr::include_graphics(path="Graficos/AEDND_03_08.png")
+```
+  \endcol
+\endcols
+
+## Q-Q plots data con NDs es eliminada incorrectamente
+
+\begincols
+  \begincol{0.40\textwidth}
+
+1. No ploteada correctamente. Usar Q-Q plots estándar que no están diseñado para data con no detectados.
+
+2. Eliminar no detectados, así que **todos los percentiles son empujados al inferior** (*desviados hacia la izquierda*).
+
+3. Desajustes de la distribución comparada con la verdadera forma de la data.
+
+  \endcol
+\begincol{0.60\textwidth}
+
+
+```{r qq4, out.width='100%', fig.align='center'}
+knitr::include_graphics(path="Graficos/AEDND_03_10.png")
+```
+  \endcol
+\endcols
+
+## Q-Q plots con 1/2 Ld subtituidos por NDs
+
+\begincols
+  \begincol{0.40\textwidth}
+
+1. Substituir los valores por una linea recta en la parte inferior.
+
+2. Distorsionar la distribución en su parte baja comparada con al verdadera forma de la data.
+
+3. Tendencia a escoger la distribución incorrecta; malos estimados para los percentiles en la parte baja.
+
+  \endcol
+\begincol{0.60\textwidth}
+
+
+```{r qq5, out.width='100%', fig.align='center'}
+knitr::include_graphics(path="Graficos/AEDND_03_11.png")
+```
+  \endcol
+\endcols
+
+
+## Q-Q plots de posible ajuste distribución para data con NDs
+
+\begincols
+  \begincol{0.40\textwidth}
+
+1. Distribución con una data cerrada a una línea recta, o con el más alto BIC (Bayesian Information Criterion) o Shapiro-Francia (coeficiente de correlación), es el mejor ajuste.
+
+2. Aquí la distribución normal es el mejor ajuste comparada con las tres otrs distribuciones.
+
+
+  \endcol
+\begincol{0.60\textwidth}
+
+
+```{r qq6, out.width='100%', fig.align='center'}
+knitr::include_graphics(path="Graficos/AEDND_03_12.png")
+```
+  \endcol
+\endcols
+
+# Ajustando Distribuciones en R
+
+## Ajuste de Distribución
+
+```{r, eval=TRUE, include=TRUE, echo=TRUE, warning=FALSE, comment=FALSE, message=FALSE}
+bd1 <- read.csv(file="../ParteIA/Code/Ejemplos/Example1.txt", header = TRUE, sep = " ")
+attach(bd1)
+NADA::censummary(Arsenic, NDisTRUE)
+# 21 obs. Pequeño para decidir que distribución usar!
+```
+
+## Calcular PPCC o BIC para mejor distribución.
+
+
+```{r, eval=FALSE,echo=TRUE}
+library(EnvStats)
+gofTestCensored(Arsenic, NDisTRUE, dist="gamma", test="ppcc")
+gofTestCensored(Arsenic, NDisTRUE, dist="lnorm", test="ppcc")
+gofTestCensored(Arsenic, NDisTRUE, dist="norm", test="ppcc")
+```
+
+```{r,echo=TRUE}
+# gamma - PPCC = r = 0.969  # Mejor Ajuste
+# lnorm - PPCC = r = 0.966
+# norm  - PPCC = r = 1.968
+```
+
+
+1. Mejor: Maximizar el PPCC, minimizar el BIC para obtener la mejor distribución.
+
+2. Mayor PPCC es **0.969** es la distribución gamma. Casi el mismo valor que la distribución normal, podría ser usada la normal? **No! (Recordar como esto esta fuera del plot CDF?)**.
+
+
+## Si la distribución normal es escogida (No!)
+
+```{r, eval=TRUE,echo=TRUE, fig.align='center', out.width='70%'}
+qqPlotCensored(Arsenic,NDisTRUE,dist="norm",add.line=TRUE)
+abline(h=0, col="red")
+abline(v=-0.70, col="red", lty=3)
+```
+
+## Si la distribución normal es escogida (No!) 2
+
+1. Distribución normal produce aproximadamente 15% de números negativos.
+
+2. Inaceptable! Rechazar incluso si tiene mayor PPCC. Las estimaciones de la media y UCL serán incorrectas.
+
+## Usar el siguiente mayor PPCC: distribución gamma
+
+```{r, eval=TRUE,echo=TRUE, out.width='50%', fig.align='center'}
+qqPlotCensored(Arsenic,NDisTRUE,dist="gamma",add.line=TRUE,
+               estimate.params = TRUE)
+```
+
+1. La distribución gamm tiene el *mayor PPCC = 0.969*
+
+2. BIC de las 3 distribuciones usar el paquete *fitdist()* escoger el menor es mejor. *gamma = 43.9, lognormal = 44.6 & normal = 50.6*.
+
+## Sumario
+
+1. Los mejores métodos son los que usan probabilidades y cuantiles.
+
+2. Esto es debido a que no detectados contienen en probabilidades de ser <Ld.
+
+3. Boxplots, plots de probabilidad, PDFs y CDFs todos proveen información valiosa.
+
+4. Scatterplots puede ser usados para plotear no detectados como lineas punteadas o barras de intervalos en vez de como puntos.
+
+
+
+
 
 
 

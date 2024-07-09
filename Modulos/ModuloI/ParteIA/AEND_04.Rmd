@@ -1,0 +1,52 @@
+---
+title: "Estimado Estadísticas Descriptivas (ND)"
+subtitle: "Presentation by Ing. A.Otiniano"
+author: "Ing. A.Otiniano"
+institute: "UNI"
+output: 
+  beamer_presentation:
+    theme: "CambridgeUS"
+    #colortheme: "dolphin"
+    fonttheme: "professionalfonts"
+    toc: true # Table of contents
+    slide_level: 2  # Enable subsections (optional)
+    keep_tex: false # keeps the .tex generated (also images)
+    latex_engine: xelatex # Latex engine
+    incremental: true
+    includes:
+      in_header: mystyle.tex
+date: "`r Sys.Date()`"
+header-includes: # format latex (you can add from latex)
+- \logo{\includegraphics[width= 2cm]{figura/logo.png}}
+  \AtBeginDocument{\setbeamertemplate{navigation symbols}[horizontal]}  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+suppressPackageStartupMessages(library(EnvStats))
+```
+
+# Objetivos 
+
+* Estimar estadísticas usando percentiles  **mediana, IQR**.
+
+* "Survival Analysis Methods" **ROS, Kaplan-Meier, Maximun liklihood estimation**.
+
+# Estimando Estadísticas Descriptivas
+
+
+## Estimando Estadísticas Descriptivas
+
+
+
+## Survival analysis - MLE
+
+
+
+
+
+
+
+
+
+
